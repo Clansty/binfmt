@@ -85,13 +85,14 @@
 //
 // The following are performed for architectures:
 //
-//   Value    Normalized
-//   aarch64  arm64
-//   armhf    arm
-//   armel    arm/v6
-//   i386     386
-//   x86_64   amd64
-//   x86-64   amd64
+//   Value        Normalized
+//   aarch64      arm64
+//   armhf        arm
+//   armel        arm/v6
+//   i386         386
+//   loongarch64  loong64
+//   x86_64       amd64
+//   x86-64       amd64
 //
 // We also normalize the operating system `macos` to `darwin`.
 //

@@ -120,6 +120,7 @@ jobs:
           docker run --rm --platform=linux/s390x s390x/ubuntu apt update
           docker run --rm --platform=linux/ppc64le ppc64le/ubuntu apt update
           docker run --rm --platform=linux/arm64 arm64v8/ubuntu apt update
+          docker run --rm --platform=linux/loong64 ghcr.io/clansty/loongarchlinux:base pacman -Sy
       -
         name: Test Syscalls
         if: matrix.target == 'mainline'
@@ -190,12 +191,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REPO_SLUG }}
+          images: ghcr.io/${{ env.REPO_SLUG }}
           tags: |
             type=ref,event=branch,enable=${{ matrix.target == 'mainline' }}
             type=ref,event=branch,prefix=${{ matrix.target }}-,enable=${{ matrix.target != 'mainline' }}
           flavor: |
-            latest=false
+            latest=true
           labels: |
             org.opencontainers.image.title=Binfmt
             org.opencontainers.image.description=Cross-platform emulator collection distributed with Docker images
@@ -206,13 +207,13 @@ jobs:
         with:
           config: .github/buildkit.toml
           buildkitd-flags: --allow-insecure-entitlement=security.insecure
-      -
-        name: Login to DockerHub
-        if: startsWith(github.ref, 'refs/heads/')
-        uses: docker/login-action@v2
+      - 
+        name: Login to ghcr.io
+        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERIO_USERNAME }}
-          password: ${{ secrets.DOCKERIO_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -224,7 +225,7 @@ jobs:
             ./docker-bake.hcl
             ${{ steps.meta.outputs.bake-file }}
           targets: ${{ matrix.target }}-all
-          push: ${{ startsWith(github.ref, 'refs/heads/') }}
+          push: true
           set: |
             *.cache-from=type=gha,scope=${{ env.CACHE_GHA_SCOPE_CROSS }}-${{ matrix.target }}
             *.cache-from=type=gha,scope=${{ env.CACHE_GHA_SCOPE }}-${{ matrix.target }}

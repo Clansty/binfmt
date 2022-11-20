@@ -110,6 +110,9 @@ func normalizeArch(arch, variant string) (string, string) {
 		case "5", "6", "8":
 			variant = "v" + variant
 		}
+	case "loongarch64":
+		arch = "loong64"
+		variant = ""
 	}
 
 	return arch, variant
