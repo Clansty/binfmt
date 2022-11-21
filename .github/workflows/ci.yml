@@ -12,7 +12,7 @@ on:
       - master
 
 env:
-  REPO_SLUG: tonistiigi/binfmt
+  REPO_SLUG: clansty/binfmt
   CACHE_GHA_SCOPE: binfmt
   CACHE_GHA_SCOPE_CROSS: binfmt-cross
 
@@ -77,13 +77,13 @@ jobs:
           load: true
           set: |
             *.cache-from=type=gha,scope=${{ env.CACHE_GHA_SCOPE }}-${{ matrix.target }}
-            mainline.tags=tonistiigi/binfmt:test
+            mainline.tags=clansty/binfmt:test
       -
         name: Test mainline
         if: matrix.target == 'mainline'
         run: |
-          docker run --rm --privileged tonistiigi/binfmt:test --uninstall amd64,arm64,arm,ppc64le,s390x,riscv64
-          docker run --rm --privileged tonistiigi/binfmt:test --install all
+          docker run --rm --privileged clansty/binfmt:test --uninstall amd64,arm64,arm,ppc64le,s390x,riscv64
+          docker run --rm --privileged clansty/binfmt:test --install all
           docker run --rm arm64v8/alpine uname -a
           docker run --rm arm32v7/alpine uname -a
           docker run --rm ppc64le/alpine uname -a
@@ -130,12 +130,12 @@ jobs:
           load: true
           set: |
             *.cache-from=type=gha,scope=${{ env.CACHE_GHA_SCOPE }}-mainline
-            mainline.tags=tonistiigi/binfmt:test
+            mainline.tags=clansty/binfmt:test
       -
         name: Set up QEMU
         run: |
-          docker run --privileged --rm tonistiigi/binfmt --uninstall qemu-*
-          docker run --rm --privileged tonistiigi/binfmt:test --install all
+          docker run --privileged --rm clansty/binfmt --uninstall qemu-*
+          docker run --rm --privileged clansty/binfmt:test --install all
       -
         name: Test
         working-directory: test/dockerfiles/${{ matrix.dockerfile }}
